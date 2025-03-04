@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NZWalksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalksConnectionString")));
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 // Usar este para hacer pruebas con datos agregados manualemente y comentar el renglon anterior
 //builder.Services.AddScoped<IRegionRepository, InMemoryRegionRepository>(); 
