@@ -8,6 +8,7 @@ using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
@@ -20,26 +21,45 @@ namespace NZWalks.API.Controllers
         private readonly NZWalksDbContext dbContext;
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(NZWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper) 
+        public RegionsController(NZWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper, ILogger<RegionsController> logger) 
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
 
         // GET ALL REGIONS
         // GET: https://localhost:xxxx/api/regions
         [HttpGet]
-        [Authorize(Roles ="Reader")]
+        //[Authorize(Roles ="Reader")]
         public async Task<IActionResult> GetAll()
         {
-            // Get Data from Database - Domain models
-            var regionsDomain = await regionRepository.GetAllAsync();
+            try
+            {
+                throw new Exception("This is a custom exception");
+                logger.LogInformation("GetAllRegions Action Method was invoked");
 
-            // Return DTOs
-            return Ok(mapper.Map<List<Region>>(regionsDomain));
+                logger.LogWarning("This is a warning log");
+                logger.LogError("This is a error log");
+
+                // Get Data from Database - Domain models
+                var regionsDomain = await regionRepository.GetAllAsync();
+                logger.LogInformation($"Finish GetAllRegions request with data: {JsonSerializer.Serialize(regionsDomain)}");
+
+                // Return DTOs
+                return Ok(mapper.Map<List<Region>>(regionsDomain));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                throw;
+            }
+            
+            
         }
 
 
