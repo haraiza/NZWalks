@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
+using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
 {
@@ -8,6 +10,14 @@ namespace NZWalks.API.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
+        private readonly IImageRepository imageRepository;
+
+        public ImagesController(IImageRepository imageRepository)
+        {
+            this.imageRepository = imageRepository;
+        }
+
+
         // POST: /api/Images/Upload
         [HttpPost]
         [Route("Upload")]
@@ -17,7 +27,19 @@ namespace NZWalks.API.Controllers
 
             if(ModelState.IsValid)
             {
+                // Convert DTO to Domain model
+                var imageDomainModel = new Image
+                {
+                    File = request.File,
+                    FileExtension = Path.GetExtension(request.File.FileName),
+                    FileSizeInBytes = request.File.Length,
+                    FileName = request.FileName,
+                    FileDescription = request.FileDescription,
+                };
 
+                // User repository to upload image
+                await imageRepository.Upload(imageDomainModel);
+                return Ok(imageDomainModel);
             }
             
             return BadRequest(ModelState);
@@ -27,7 +49,7 @@ namespace NZWalks.API.Controllers
         {
             var allowedExtensions = new string[] { ".jpg", ".jped", ".png" };
 
-            if (!allowedExtensions.Contains(Path.GetExtension(request.FileName)))
+            if (!allowedExtensions.Contains(Path.GetExtension(request.File.FileName)))
                 ModelState.AddModelError("file", "Unsupported file extension");
 
             //this number (10485760) is 10 MB
