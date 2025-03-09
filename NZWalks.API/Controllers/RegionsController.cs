@@ -40,7 +40,6 @@ namespace NZWalks.API.Controllers
         {
             try
             {
-                throw new Exception("This is a custom exception");
                 logger.LogInformation("GetAllRegions Action Method was invoked");
 
                 logger.LogWarning("This is a warning log");
@@ -67,7 +66,7 @@ namespace NZWalks.API.Controllers
         // GET: https://localhost:xxxx/api/regions/{id}
         [HttpGet]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Reader")]
+        //[Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetRegionById([FromRoute] Guid id)
         {
             // Get Data from Database - Domain models
@@ -86,7 +85,7 @@ namespace NZWalks.API.Controllers
         // POST: https://localhost:xxxx/api/regions
         [HttpPost]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             var regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
@@ -106,7 +105,7 @@ namespace NZWalks.API.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             // Map DTO to Domain Model
@@ -126,7 +125,7 @@ namespace NZWalks.API.Controllers
         // DELETE: https://localhost:xxxx/api/regions/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer,Reader")]
+        //[Authorize(Roles = "Writer,Reader")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var regionDomainModel = await regionRepository.DeleteAsync(id);
