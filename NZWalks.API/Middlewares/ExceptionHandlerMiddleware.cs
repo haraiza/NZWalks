@@ -2,6 +2,7 @@
 
 namespace NZWalks.API.Middlewares
 {
+    // Este metodo esta para capturar cualquier error y agregarlo a los Logs
     public class ExceptionHandlerMiddleware
     {
         private readonly ILogger<ExceptionHandlerMiddleware> logger;
@@ -23,17 +24,17 @@ namespace NZWalks.API.Middlewares
             {
                 var errorId = Guid.NewGuid();
 
-                // Log this exception
+                // Agrega esta excepcion a los Logs
                 logger.LogError(ex, $"{errorId}: {ex.Message}");
 
-                // Return a Custom Error Response
+                // Regresa una respuesta Custom Error
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 httpContext.Response.ContentType = "application/json";
 
                 var error = new
                 {
                     Id = errorId,
-                    ErrorMessage = "Something went wrong! We are looking into resolving this. "
+                    ErrorMessage = "Algo salio mal! Estamos buscando como resolverlo. "
                 };
 
                 await httpContext.Response.WriteAsJsonAsync(error);

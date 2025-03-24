@@ -17,7 +17,7 @@ namespace NZWalks.API.Repositories
 
         public string CreateJWTToken(IdentityUser user, List<string> roles)
         {
-            // Create claims 
+            // Crea los claims (Afirmaciones sobre un usuario)
             var claims = new List<Claim>();
 
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
@@ -31,7 +31,7 @@ namespace NZWalks.API.Repositories
                 configuration["Jwt:Issuer"],
                 configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(15),
+                expires: DateTime.UtcNow.AddMinutes(15), // El token es valido por 15 minutos
                 signingCredentials: credentials);
          
             return new JwtSecurityTokenHandler().WriteToken(token); 

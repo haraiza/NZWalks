@@ -12,7 +12,7 @@
 
 
         // Navigation properties
-        public Difficulty Difficulty { get; set; }
-        public Region Region { get; set; }
+        public Difficulty Difficulty { get; set; } // Referencia cruzada con la tabla Difficulty
+        public Region Region { get; set; } // Referencia cruzada con la tabla Region
     }
 }

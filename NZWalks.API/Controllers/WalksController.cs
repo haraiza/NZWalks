@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.CustomActionFilters;
 using NZWalks.API.Models.Domain;
@@ -8,6 +7,13 @@ using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
 {
+
+    // Se usa:
+    // [FromRoute] cuando es un elemento unico y obligatorio
+    // [FroBody] cuando es un elemento complejo como un DTO o un POST, PUT
+    // [FromQuery] cuando contiene elementos opcionales como filtros, paginacion, ordenamiento, etc
+
+
     // https://localhost:xxxx/api/walks
     [Route("api/[controller]")]
     [ApiController]
@@ -46,11 +52,6 @@ namespace NZWalks.API.Controllers
                                                 [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
         {
             var walksDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending, pageNumber, pageSize);
-
-            // Create an exception
-            throw new Exception("This is a new exception!");
-
-            // Map Domain Model to DTO
             return Ok(mapper.Map<List<WalkDto>>(walksDomainModel));
         }
 
@@ -77,9 +78,7 @@ namespace NZWalks.API.Controllers
         [ValidateModel]
         public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalkRequestDto updateWalkRequestDto)
         {
-            // Map DTO to Domain Model
             var walkDomainModel = mapper.Map<Walk>(updateWalkRequestDto);
-
             walkDomainModel = await walkRepository.UpdateAsync(id, walkDomainModel);
 
             if (walkDomainModel is null)
@@ -100,9 +99,7 @@ namespace NZWalks.API.Controllers
             if(deletedWalkdDomainModel is null)
                 return NotFound();
 
-            // Map Domain Model to DTO
             return Ok(mapper.Map<WalkDto>(deletedWalkdDomainModel));
         }
-
     }
 }

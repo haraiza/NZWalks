@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 
@@ -39,18 +38,18 @@ namespace NZWalks.API.Repositories
                                                   int pageNumber = 1, int pageSize = 1000)
         {
             var walk = dbContext.Walk
-                .Include("Difficulty")
-                .Include("Region")
+                .Include("Difficulty") //Agrega la referencia cruzada a la tabla Difficulty
+                .Include("Region") // Agrega la referencia cruzada a la tabla Region
                 .AsQueryable();
 
-            // Filtering
+            // Filtra la columna Name
             if(string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false )
             {
                 if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
                     walk = walk.Where(x => x.Name.Contains(filterQuery));
             }
 
-            // Sorting
+            // Ordena las columnas por Name o por Length
             if(string.IsNullOrWhiteSpace(sortBy) == false)
             {
                 if(sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
@@ -59,7 +58,7 @@ namespace NZWalks.API.Repositories
                     walk = isAscending ? walk.OrderBy(x => x.LengthInKm) : walk.OrderByDescending(x => x.LengthInKm);
             }
 
-            // Pagination
+            // Paginacion
             var skipResults = (pageNumber - 1) * pageSize;
 
             return await walk.Skip(skipResults).Take(pageSize).ToListAsync();

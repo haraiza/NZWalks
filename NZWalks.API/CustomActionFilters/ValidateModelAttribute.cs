@@ -11,7 +11,6 @@ namespace NZWalks.API.CustomActionFilters
             {
                 context.Result = new BadRequestResult();
             }
-            
         }
     }
 }

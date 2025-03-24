@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NZWalks.API.Data;
+﻿using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 
 namespace NZWalks.API.Repositories
@@ -21,17 +20,18 @@ namespace NZWalks.API.Repositories
 
         public async Task<Image> Upload(Image image)
         {
+            // Obtiene cual sera el path de la imagen
             var localFilePath = Path.Combine(webHostEnviroment.ContentRootPath, "Images", $"{image.FileName}{image.FileExtension}");
 
-            // Upload image to local path
             using var stream = new FileStream(localFilePath, FileMode.Create);
+            // Copia la imagen a path
             await image.File.CopyToAsync(stream);
 
             // https://localhost:7250/images/image.jpg
             var urlFilePath = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}{httpContextAccessor.HttpContext.Request.PathBase}/Images/{image.FileName}{image.FileExtension}";
             image.FilePath = urlFilePath;
 
-            // Add Image to the Images Table
+            // Agrega la imagen a la tabla Images 
             await dbContext.Image.AddAsync(image);
             await dbContext.SaveChangesAsync();
 
